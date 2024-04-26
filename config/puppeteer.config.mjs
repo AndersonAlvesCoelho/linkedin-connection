@@ -18,7 +18,7 @@ const getExecutablePath = () => {
 const puppeteerConfig = {
   headless: false,
   ignoreDefaultArgs: ["--mute-audio"],
-  args: ["--no-sandbox", "--disable-web-security"],
+  args: ['--start-maximized'],
   executablePath: getExecutablePath(),
 };
 

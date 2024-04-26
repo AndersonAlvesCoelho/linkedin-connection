@@ -4,12 +4,23 @@ import puppeteerConfig from "../config/puppeteer.config.mjs";
 import { delay } from '../helper/delay.js'
 import { browserConstants } from "../config/constants.js"
 
-const { submitLogin } = browserConstants;
+const { submitLogin, url } = browserConstants;
 
 async function startBrowser() {
   try {
     const browser = await puppeteer.launch(puppeteerConfig);
     const page = await browser.newPage();
+
+    const { width, height } = await page.evaluate(() => {
+      return {
+        width: window.screen.availWidth,
+        height: window.screen.availHeight,
+      };
+    });
+
+    await page.setViewport({ width, height });
+    await page.goto(url);
+
     return { browser, page };
   } catch (error) {
     throw new Error(`Ocorreu um erro - startBrowser: ${error.message}`);
