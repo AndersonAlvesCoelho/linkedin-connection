@@ -1,8 +1,8 @@
 import puppeteer from "puppeteer";
 import puppeteerConfig from "../config/puppeteer.config.mjs";
 
-import { delay } from '../helper/delay.js'
-import { browserConstants } from "../config/constants.js"
+import { browserConstants } from "../config/constants.js";
+import { delay } from "../helper/delay.js";
 
 const { submitLogin, url } = browserConstants;
 
@@ -40,4 +40,4 @@ async function login(page, username, password) {
   }
 }
 
-export { startBrowser, login };
+export { login, startBrowser };
