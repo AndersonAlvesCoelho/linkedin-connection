@@ -1,30 +1,21 @@
-import menu from "./helper/menu.js"
-import { login, startBrowser } from "./puppeteerModule/start.js"
+import menu from "./helper/menu.js";
+import { runConnetion } from "./modules/connection.js";
 
-import { delay } from "./helper/delay.js";
 import likingPosts from "./puppeteerModule/browser.js";
-
 
 async function main() {
   const { option, username, password } = await menu();
-  const { browser, page } = await startBrowser();
-
-  await login(page, username, password);
-  await delay(5000);
 
   switch (parseInt(option)) {
     case 1:
-      await likingPosts(page);
+      await likingPosts(username, password);
       break;
     case 2:
-      // await likingPosts()
+      await runConnetion(username, password);
       break;
     default:
       console.log("Não existe essa opção");
   }
-  await browser.close();
 }
 
-
-
-main()
+main();

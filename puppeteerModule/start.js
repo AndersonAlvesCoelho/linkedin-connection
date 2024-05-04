@@ -33,7 +33,7 @@ async function login(page, username, password) {
     await page.type("input[id=password]", password);
     await delay(1000);
     await page.click(submitLogin);
-
+    await delay(5000);
     await delay(3000);
   } catch (error) {
     throw new Error(`Ocorreu um erro - login: ${error.message}`);

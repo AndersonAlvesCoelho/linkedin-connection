@@ -14,12 +14,14 @@ const browserConstants = {
   },
   connect: {
     // pegar todos os botões de conectar
+    url: "https://www.linkedin.com/search/results/people/?activelyHiring=%22true%22&keywords={{term}}",
     connectButton: `button[aria-label*="Convidar"]`, // by class ".artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view"
-    name: (value) => value.ariaLabel.split(" ")[1], // << value = item do connectButton
+    getName: (value) => value.split(" ")[1], // << value = item do connectButton
+    btnNoSendNote: `button[aria-label*="sem nota"]`,
     actions: {
-      addNote: `button[aria-label="Adicionar nota"]`, // by class .artdeco-button.artdeco-button--muted.artdeco-button--2.artdeco-button--secondary.ember-view.mr1
+      btnAddNote: `button[aria-label="Adicionar nota"]`, // by class .artdeco-button.artdeco-button--muted.artdeco-button--2.artdeco-button--secondary.ember-view.mr1
       inputNote: "textarea[name='message']",
-      sendNote: "button[aria-label='Enviar convite']", // by class .artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1
+      btnSendNote: "button[aria-label*='Enviar convite']", // by class .artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1
     },
   },
   followers: `"button[aria-label*='Seguir']"`, // `.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view` ou "button[aria-label*='para se conectar']"
