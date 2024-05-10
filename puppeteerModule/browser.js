@@ -1,8 +1,9 @@
 import { browserConstants } from "../config/constants.js";
 
 import { delay } from "../helper/delay.js";
+import getInput from "../helper/input.js";
 import { login, startBrowser } from "./start.js";
-const { buttonsPost, buttonPlusPost, followers } = browserConstants;
+const { buttonsPost, inputSearch, followers } = browserConstants;
 
 function buildUrl(
   category, // all, people, companies
@@ -17,11 +18,29 @@ function buildUrl(
 }
 
 export default async function likingPosts(username, password) {
+
+  console.clear();
+  console.log("Gostaria de curtir algo específico? ")
+
+  const isTerm = await getInput("s/n: ");
+  let term = false
+  if (isTerm === 's') {
+    console.clear();
+    term = await getInput("Inform o termo (não precisa coloca #): ");
+  }
+
+
   const { browser, page } = await startBrowser();
 
   try {
+
     await login(page, username, password);
     await delay(5000);
+
+    if (term) {
+      await page.goto(`https://www.linkedin.com/search/results/all/?keywords=%23${term}`);
+      await delay(3000);
+    }
 
     while (true) {
       await page.waitForSelector(buttonsPost);
@@ -35,8 +54,8 @@ export default async function likingPosts(username, password) {
     }
   } catch (err) {
     console.error("Err: ", err);
+    browser.close();
   }
-  browser.close();
 }
 
 async function actionFollowers(page) {

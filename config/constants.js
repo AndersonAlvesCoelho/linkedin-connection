@@ -8,7 +8,7 @@ const browserConstants = {
   buttonChat: ".msg-overlay-bubble-header__control--new-convo-btn",
   buttonChatIsClose: "[data-test-icon='chevron-up-small']",
   buttonChatIsOpen: "[data-test-icon='chevron-down-small']",
-
+  inputSearch: ".search-global-typeahead__input",
   profile: {
     link: ``,
   },
