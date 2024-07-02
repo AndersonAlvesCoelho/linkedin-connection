@@ -9,7 +9,7 @@
 - Recompartilhar Posts
 - Mandar mensagem para as conexões
 
-### Contribuidores com Projeto
+### Contribuidores
 Este projeto existe graças a todas as pessoas que contribuem. [[Contribute](https://github.com/AndersonAlvesCoelho/linkedin-connection)].
 
 <a href = "https://github.com/AndersonAlvesCoelho/linkedin-connection/graphs/contributors">
