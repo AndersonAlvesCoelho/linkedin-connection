@@ -3,6 +3,7 @@
 - Seguir e Mandar Mensagem
 
 ### Proximas Features
+- Passar código para Typescript
 - Documentação / Wiki
 - Executavel / Interface
 - Comentar Posts
