@@ -1,15 +1,9 @@
 import { browserConstants } from "../config/constants.js";
-
 import { delay } from "../helper/delay.js";
 import { login, startBrowser } from "./start.js";
-const { buttonsPost, buttonPlusPost, followers } = browserConstants;
+const { buttonsPost, followers } = browserConstants;
 
-function buildUrl(
-  category, // all, people, companies
-  search, // tech recruiter
-  hiring, // true or false
-  hashtag // #techrecruiter
-) {
+function buildUrl(category, search, hiring, hashtag) {
   if (search)
     return `https://www.linkedin.com/search/results/${category}/?keywords=${search}&activelyHiring="${hiring}"`;
 
@@ -54,19 +48,12 @@ async function actionFollowers(page) {
   }
 }
 
-async function connectWithPeoples(
-  username,
-  password,
-  amount,
-  term,
-  note = false
-) {
+async function connectWithPeoples(username, password, amount, term, note = false) {
   try {
     const { browser, page } = await startBrowser();
     let countConected = 0;
-    const { nextPage } = browserConstants;
-    const { url, connectButton, actions, getName, btnNoSendNote } =
-      browserConstants.connect;
+    const nextPage = 'button.artdeco-pagination__button--next'; // Atualizado o seletor do botão de próxima página
+    const { url, connectButton, actions, getName, btnNoSendNote } = browserConstants.connect;
 
     await login(page, username, password);
     await delay(5000);
@@ -74,11 +61,23 @@ async function connectWithPeoples(
     await page.goto(url.replace("{{term}}", term));
     await delay(5000);
 
-    while (true) {
-      let elemento, name, msg;
-      await page.waitForSelector(connectButton);
-      const buttonsOfPeoples = await page.$$(connectButton);
+    while (countConected < amount) {
+      try {
+        await page.waitForSelector(connectButton, { timeout: 30000 });
+      } catch (err) {
+        console.log("Selector de conexão não encontrado, tentando ir para a próxima página.");
+        try {
+          await page.waitForSelector(nextPage, { timeout: 5000 });
+          await page.click(nextPage);
+          await delay(5000); // Aguarde a nova página carregar
+          continue; // Tente novamente na nova página
+        } catch (nextPageErr) {
+          console.log("Não foi possível encontrar o botão de próxima página ou houve um erro ao clicar.");
+          break;
+        }
+      }
 
+      const buttonsOfPeoples = await page.$$(connectButton);
       const { btnAddNote, inputNote, btnSendNote } = actions;
       for (let people of buttonsOfPeoples) {
         await delay(1000);
@@ -86,17 +85,14 @@ async function connectWithPeoples(
         await delay(1000);
 
         if (note) {
-          elemento = await people
-            .getProperty("ariaLabel")
-            .then((el) => el.jsonValue());
-          name = getName(elemento);
+          const elemento = await people.getProperty("ariaLabel").then((el) => el.jsonValue());
+          const name = getName(elemento);
 
           await page.waitForSelector(btnAddNote);
           await page.click(btnAddNote);
           await delay(1000);
 
-          // olá, {{name}}! Vamos nos conectar? Obs.: Sou uma automação em período de teste.
-          msg = note.replace("{{name}}", name);
+          const msg = note.replace("{{name}}", name);
           console.log("msg: ", msg);
           await page.waitForSelector(inputNote);
           await page.type(inputNote, msg);
@@ -117,8 +113,16 @@ async function connectWithPeoples(
           break;
         }
       }
-      if (countConected === amount) {
-        break;
+
+      if (countConected < amount) {
+        try {
+          await page.waitForSelector(nextPage);
+          await page.click(nextPage);
+          await delay(5000); // Aguarde a nova página carregar
+        } catch (err) {
+          console.log("Não foi possível encontrar o botão de próxima página ou houve um erro ao clicar.");
+          break;
+        }
       }
     }
     browser.close();
@@ -127,4 +131,4 @@ async function connectWithPeoples(
   }
 }
 
-export { actionFollowers, buildUrl, connectWithPeoples };
+export { actionFollowers, buildUrl, connectWithPeoples, likingPosts };
