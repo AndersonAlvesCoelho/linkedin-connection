@@ -27,14 +27,16 @@ async function startBrowser() {
   }
 }
 
-async function login(page, username, password) {
+async function login(username, password) {
   try {
+    const { browser, page } = await startBrowser();
     await page.type("input[id=username]", username);
     await page.type("input[id=password]", password);
     await delay(1000);
     await page.click(submitLogin);
     await delay(5000);
     await delay(3000);
+    return { browser, page };
   } catch (error) {
     throw new Error(`Ocorreu um erro - login: ${error.message}`);
   }

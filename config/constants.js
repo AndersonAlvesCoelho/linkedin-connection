@@ -3,7 +3,7 @@ const browserConstants = {
   submitLogin: "button[data-litms-control-urn='login-submit']",
   buttonsPost:
     "button.artdeco-button.artdeco-button--muted.artdeco-button--4.artdeco-button--tertiary.ember-view.social-actions-button.react-button__trigger[aria-pressed='false']",
-  buttonPlusPost:
+  buttonShowMorePosts:
     ".artdeco-button.artdeco-button--muted.artdeco-button--1.artdeco-button--full.artdeco-button--secondary.ember-view.scaffold-finite-scroll__load-button",
   buttonChat: ".msg-overlay-bubble-header__control--new-convo-btn",
   buttonChatIsClose: "[data-test-icon='chevron-up-small']",
@@ -24,7 +24,7 @@ const browserConstants = {
       btnSendNote: "button[aria-label*='Enviar convite']", // by class .artdeco-button.artdeco-button--2.artdeco-button--primary.ember-view.ml1
     },
   },
-  followers: `"button[aria-label*='Seguir']"`, // `.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view` ou "button[aria-label*='para se conectar']"
+  followers: "button[aria-label*='Seguir']", // `.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view` ou "button[aria-label*='para se conectar']"
   nextPage: "button[aria-label='Avançar']",
 };
 export { browserConstants };
