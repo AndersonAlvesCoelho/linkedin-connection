@@ -14,7 +14,7 @@ const browserConstants = {
   },
   connect: {
     // pegar todos os botões de conectar
-    url: "https://www.linkedin.com/search/results/people/?activelyHiring=%22true%22&keywords={{term}}",
+    url: 'https://www.linkedin.com/search/results/people/?activelyHiring=%22true%22&geoUrn=%5B"106057199"%5D&keywords={{term}}',
     connectButton: `button[aria-label*="Convidar"]`, // by class ".artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view"
     getName: (value) => value.split(" ")[1], // << value = item do connectButton
     btnNoSendNote: `button[aria-label*="sem nota"]`,

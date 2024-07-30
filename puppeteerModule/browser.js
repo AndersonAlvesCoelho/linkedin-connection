@@ -5,18 +5,20 @@ import { login, startBrowser } from "./start.js";
 const { buttonsPost, buttonPlusPost, followers } = browserConstants;
 
 function buildUrl(
-  category, // all, people, companies
-  search, // tech recruiter
-  hiring, // true or false
-  hashtag // #techrecruiter
+  category = "all", // all, people, companies
+  search = "tech recruiter", // tech recruiter
+  hiring = true, // true or false
+  hashtag = "techrecruiter" // #techrecruiter
 ) {
   if (search)
-    return `https://www.linkedin.com/search/results/${category}/?keywords=${search}&activelyHiring="${hiring}"`;
+    return `https://www.linkedin.com/search/results/${
+      category + "/"
+    }?keywords=${search}&activelyHiring="${hiring}"`;
 
   return `https://www.linkedin.com/feed/hashtag/${hashtag}/`;
 }
 
-export default async function likingPosts(username, password) {
+export default async function likingPosts(username, password, hashtag = "") {
   const { browser, page } = await startBrowser();
 
   try {
@@ -63,7 +65,7 @@ async function connectWithPeoples(
 ) {
   try {
     const { browser, page } = await startBrowser();
-    let countConected = 0;
+    let countConnected = 0;
     const { nextPage } = browserConstants;
     const { url, connectButton, actions, getName, btnNoSendNote } =
       browserConstants.connect;
@@ -74,8 +76,8 @@ async function connectWithPeoples(
     await page.goto(url.replace("{{term}}", term));
     await delay(5000);
 
-    while (true) {
-      let elemento, name, msg;
+    while (countConnected <= amount) {
+      await delay(3000);
       await page.waitForSelector(connectButton);
       const buttonsOfPeoples = await page.$$(connectButton);
 
@@ -86,17 +88,16 @@ async function connectWithPeoples(
         await delay(1000);
 
         if (note) {
-          elemento = await people
+          const elemento = await people
             .getProperty("ariaLabel")
             .then((el) => el.jsonValue());
-          name = getName(elemento);
+          const name = getName(elemento);
 
           await page.waitForSelector(btnAddNote);
           await page.click(btnAddNote);
           await delay(1000);
 
-          // olá, {{name}}! Vamos nos conectar? Obs.: Sou uma automação em período de teste.
-          msg = note.replace("{{name}}", name);
+          const msg = note.replace("{{name}}", name);
           console.log("msg: ", msg);
           await page.waitForSelector(inputNote);
           await page.type(inputNote, msg);
@@ -112,14 +113,16 @@ async function connectWithPeoples(
           await delay(1000);
         }
 
-        countConected++;
-        if (countConected === amount) {
+        countConnected++;
+        if (countConnected > amount) {
           break;
         }
       }
-      if (countConected === amount) {
-        break;
-      }
+
+      // Ir para a próxima página quando não houver mais pessoas para conectar
+      await page.waitForSelector(nextPage);
+      await page.click(nextPage);
+      await delay(5000);
     }
     browser.close();
   } catch (err) {
@@ -128,3 +131,4 @@ async function connectWithPeoples(
 }
 
 export { actionFollowers, buildUrl, connectWithPeoples };
+// Olá! Sou Willian, desenvolvedor com 5+ anos de experiência. Aceite meu convite! 😉 Conectar com você seria ótimo. Se precisar de um desenvolvedor experiente em Python, NodeJs e APIs, estou pronto para novas oportunidades. Obrigado! Meu WhatsApp: wa.me/5561983244927

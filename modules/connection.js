@@ -47,10 +47,10 @@ async function getNote() {
     note = await getInput("Mensagem: ");
     note.trim();
 
-    if (note.length > 200) {
-      console.log("Mensagem muito grande");
-      note = true;
-    }
+    // if (note.length > 200) {
+    //   console.log("Mensagem muito grande");
+    //   note = true;
+    // }
   } while (note === true);
   return note;
 }
