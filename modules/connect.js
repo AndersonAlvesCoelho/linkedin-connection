@@ -1,5 +1,4 @@
-import getInput from "./../helper/input.js";
-import { connectWithPeoples } from "./../puppeteerModule/browser.js";
+import getInput from "../helper/input.js";
 
 async function hasNote() {
   console.clear();
@@ -46,11 +45,6 @@ async function getNote() {
     note = false;
     note = await getInput("Mensagem: ");
     note.trim();
-
-    if (note.length > 200) {
-      console.log("Mensagem muito grande");
-      note = true;
-    }
   } while (note === true);
   return note;
 }
@@ -74,18 +68,10 @@ async function getTermOfSearch() {
   return term;
 }
 
-async function runConnetion(username, password) {
-  const amountConnections = await getAmount();
-  const sendNote = await hasNote();
-  let note = "";
-  if (sendNote) {
-    note = await getNote();
-  }
+export async function runConnect(browser) {
+  const amount = await getAmount();
   const term = await getTermOfSearch();
+  const note = (await hasNote()) ? await getNote() : false;
 
-  await connectWithPeoples(username, password, amountConnections, term, note);
-
-  console.log("Conexões realizadas com sucesso");
+  await browser.connectWithPeoples(amount, term, note);
 }
-
-export { runConnetion };
