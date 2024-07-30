@@ -26,5 +26,23 @@ const browserConstants = {
   },
   followers: "button[aria-label*='Seguir']", // `.artdeco-button.artdeco-button--2.artdeco-button--secondary.ember-view` ou "button[aria-label*='para se conectar']"
   nextPage: "button[aria-label='Avançar']",
+  jobs: {
+    jobSearchUrl: 'https://www.linkedin.com/jobs/search/?keywords={{term}}',
+    applyButton: 'button.jobs-apply-button',
+    questionnaireSelectors: [
+      'input[type="text"]',
+      'input[type="number"]',
+      'textarea',
+      'select'
+    ],
+    modalButtons: [
+      'button[data-easy-apply-next-button]',
+      'button[data-control-name="continue_unify"]',
+      'button[aria-label="Revise sua candidatura"]',
+      'button[aria-label="Enviar sua candidatura"]',
+      'button[aria-label="Avançar para próxima etapa"]'
+    ],
+    nextPage: 'button.artdeco-pagination__button--next',
+  },
 };
 export { browserConstants };
