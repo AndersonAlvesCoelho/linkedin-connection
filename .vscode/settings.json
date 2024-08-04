@@ -1,0 +1,21 @@
+{
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"eslint.probe": ["typescript", "javascript"],
+	"[typescript, javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode",
+		"editor.formatOnSave": true,
+		"editor.formatOnPaste": true,
+		"editor.formatOnType": true,
+		"editor.codeActionsOnSave": {
+			"source.fixAll.eslint": "explicit",
+			"source.fixAll": "explicit",
+			"source.organizeImports": "explicit"
+		}
+	},
+	"files.exclude": {
+		".git": true,
+		"dist": true,
+		"node_modules": true,
+		".mule": true
+	}
+}
