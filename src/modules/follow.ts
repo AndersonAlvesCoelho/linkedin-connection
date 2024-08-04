@@ -1,6 +1,6 @@
-import getInput from "../helper/input.js";
+import getInput from "../utils/input";
 
-class Follower {
+class FollowerModule {
   constructor(browser) {
     this.browser = browser;
   }
@@ -71,4 +71,4 @@ class Follower {
   }
 }
 
-export default Follower;
+export default FollowerModule;

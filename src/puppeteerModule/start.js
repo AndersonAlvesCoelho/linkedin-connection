@@ -30,8 +30,8 @@ async function startBrowser() {
 async function login(username, password) {
   try {
     const { browser, page } = await startBrowser();
-    await page.type("input[id=username]", username);
-    await page.type("input[id=password]", password);
+    await page.type("input[id=username]", username, { delay: 100 });
+    await page.type("input[id=password]", password, { delay: 130 });
     await delay(1000);
     await page.click(submitLogin);
     await delay(5000);

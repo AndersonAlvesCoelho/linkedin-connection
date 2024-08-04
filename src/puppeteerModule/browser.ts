@@ -1,4 +1,5 @@
 import fs from "fs";
+import { Page, Browser as PuppeteerBrowser } from "puppeteer";
 import { browserConstants } from "../config/constants.js";
 import { delay } from "../utils/delay.js";
 import { login } from "./start.js";
@@ -6,24 +7,14 @@ const { buttonsPost, nextPage, buttonShowMorePosts, followers } =
   browserConstants;
 const COOKIES_FILE = "../cookies.json";
 
-/**
- * @class Browser
- * @description
- * Classe responsável por gerenciar as ações de navegação automatizadas no LinkedIn, como iniciar sessão, curtir posts, seguir pessoas e conectar-se com usuários.
- */
 export class Browser {
+  private browser: PuppeteerBrowser;
+  private page: Page | null;
   constructor() {
-    this.browser = null;
-    this.page = null;
+    this.browser;
+    this.page;
   }
 
-  /**
-   * @param {string} username - Nome de usuário do LinkedIn
-   * @param {string} password - Senha do LinkedIn
-   * @returns {Promise<void>}
-   * @description
-   * Inicializa a sessão do navegador com as credenciais fornecidas.
-   */
   async initializeSession(username, password) {
     const { browser, page } = await login(username, password);
     this.browser = browser;
@@ -31,23 +22,11 @@ export class Browser {
     await Promise.all([this.loadCookies(page), this.saveCookies(page)]);
   }
 
-  /**
-   * @param {Page} page - Instância da página do Puppeteer
-   * @returns {Promise<void>}
-   * @description
-   * Salva os cookies da sessão atual em um arquivo.
-   */
   async saveCookies(page) {
     const cookies = await page.cookies();
     fs.writeFileSync(COOKIES_FILE, JSON.stringify(cookies, null, 2));
   }
 
-  /**
-   * @param {Page} page - Instância da página do Puppeteer
-   * @returns {Promise<void>}
-   * @description
-   * Carrega os cookies do arquivo e os aplica na sessão atual.
-   */
   async loadCookies(page) {
     if (fs.existsSync(COOKIES_FILE)) {
       const cookies = JSON.parse(fs.readFileSync(COOKIES_FILE, "utf-8"));
@@ -55,45 +34,11 @@ export class Browser {
     }
   }
 
-  /**
-   * @returns {Promise<void>}
-   * @description
-   * Fecha a sessão do navegador.
-   */
   async close() {
     await this.browser.close();
   }
 
-  /**
-   * @param {string} category - Categoria da busca (pessoas, empresas)
-   * @param {string} search - Termo de busca (ex: tech recruiter)
-   * @param {boolean} hiring - Filtrar por vagas ativas (true ou false)
-   * @param {string} hashtag - Hashtag para busca
-   * @returns {string} URL construída com base nos parâmetros fornecidos
-   * @description
-   * Constrói uma URL de busca no LinkedIn com base nos parâmetros fornecidos.
-   */
-  buildUrl(
-    category = "people", // people, companies
-    search = "", // tech recruiter
-    hiring = true, // true or false
-    hashtag = "" // #techrecruiter
-  ) {
-    if (search)
-      return `https://www.linkedin.com/search/results/${
-        category + "/"
-      }?keywords=${search}&activelyHiring="${hiring}"&geoUrn=%5B"106057199"%5D`;
-
-    return `https://www.linkedin.com/feed/hashtag/${hashtag}/`;
-  }
-
-  /**
-   * @param {number} amount - Quantidade de posts a serem curtidos
-   * @param {string} hashtag - Hashtag para busca de posts
-   * @returns {Promise<void>}
-   * @description
-   * Realiza login no LinkedIn e curte uma quantidade especificada de posts que correspondem a uma hashtag.
-   */
+  //TODO: Passar para classe de Likes
   async likingPosts(amount = 20, hashtag = "") {
     try {
       if (hashtag) {
@@ -125,14 +70,7 @@ export class Browser {
     }
   }
 
-  /**
-   * @param {number} amount - Quantidade de seguidores a serem adicionados
-   * @param {string} term - Termo de busca (ex: tech recruiter)
-   * @param {string} category - Categoria da busca (pessoas)
-   * @returns {Promise<void>}
-   * @description
-   * Realiza login no LinkedIn e segue uma quantidade especificada de pessoas que correspondem a uma categoria.
-   */
+  //TODO: Passar para classe de Follow
   async actionFollowers(amount = 20, term = "recruiter", category = "people") {
     try {
       const url = this.buildUrl(category, term);
@@ -171,14 +109,7 @@ export class Browser {
     }
   }
 
-  /**
-   * @param {number} amount - Quantidade de pessoas a serem conectadas
-   * @param {string} term - Termo de busca (ex: tech recruiter)
-   * @param {boolean|string} note - Nota personalizada para ser enviada com o convite
-   * @returns {Promise<void>}
-   * @description
-   * Realiza login no LinkedIn, busca pessoas com base no termo fornecido e envia convites de conexão com uma nota personalizada opcional.
-   */
+  //TODO: Passar para classe de Connect
   async connectWithPeoples(amount, term, note = false) {
     try {
       const { connectButton, actions, getName, btnNoSendNote } =
@@ -249,6 +180,8 @@ export class Browser {
   }
 
   async returnToFeed() {
-    await this.page.goto("https://www.linkedin.com/feed/");
+    if (this.page) {
+      await this.page.goto("https://www.linkedin.com/feed/");
+    }
   }
 }

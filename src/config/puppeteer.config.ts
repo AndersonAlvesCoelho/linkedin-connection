@@ -1,5 +1,4 @@
 import os from "os";
-import { PuppeteerLaunchOptions } from "puppeteer";
 
 const DIRCACHE = __dirname + "./cache/.browser";
 
@@ -18,12 +17,13 @@ export function getExecutablePath() {
   }
 }
 
-const puppeteerConfig: PuppeteerLaunchOptions = {
+const puppeteerConfig = {
   headless: false,
   ignoreDefaultArgs: ["--mute-audio"],
   args: ["--start-maximized"],
   defaultViewport: null,
-  executablePath: getExecutablePath(),
+  executablePath:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   userDataDir: DIRCACHE,
 };
 
