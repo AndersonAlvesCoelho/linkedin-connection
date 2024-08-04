@@ -1,6 +1,6 @@
 import fs from "fs";
 import { browserConstants } from "../config/constants.js";
-import { delay } from "../helper/delay.js";
+import { delay } from "../utils/delay.js";
 import { login } from "./start.js";
 const { buttonsPost, nextPage, buttonShowMorePosts, followers } =
   browserConstants;
@@ -28,9 +28,7 @@ export class Browser {
     const { browser, page } = await login(username, password);
     this.browser = browser;
     this.page = page;
-    // verificar se está nessa rota:  checkpoint/challenge/verify caso esteja, redirecionar para a /feed
-    await this.loadCookies(page);
-    await this.saveCookies(page);
+    await Promise.all([this.loadCookies(page), this.saveCookies(page)]);
   }
 
   /**

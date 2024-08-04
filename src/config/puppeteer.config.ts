@@ -1,6 +1,9 @@
 import os from "os";
+import { PuppeteerLaunchOptions } from "puppeteer";
 
-const getExecutablePath = () => {
+const DIRCACHE = __dirname + "./cache/.browser";
+
+export function getExecutablePath() {
   const platform = os.platform();
 
   switch (platform) {
@@ -13,13 +16,15 @@ const getExecutablePath = () => {
     default:
       throw new Error("Unsupported platform");
   }
-};
+}
 
-const puppeteerConfig = {
+const puppeteerConfig: PuppeteerLaunchOptions = {
   headless: false,
   ignoreDefaultArgs: ["--mute-audio"],
-  args: ['--start-maximized'],
+  args: ["--start-maximized"],
+  defaultViewport: null,
   executablePath: getExecutablePath(),
+  userDataDir: DIRCACHE,
 };
 
 export default puppeteerConfig;

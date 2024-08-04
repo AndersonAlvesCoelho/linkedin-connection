@@ -1,8 +1,8 @@
 import puppeteer from "puppeteer";
-import puppeteerConfig from "../config/puppeteer.config.mjs";
 
 import { browserConstants } from "../config/constants.js";
-import { delay } from "../helper/delay.js";
+import puppeteerConfig from "../config/puppeteer.config.js";
+import { delay } from "../utils/delay.js";
 
 const { submitLogin, url } = browserConstants;
 
