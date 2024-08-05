@@ -1,7 +1,7 @@
 import { Browser, Page } from 'puppeteer';
 import { browserConstants } from '../config/constants';
 import { buildURL } from '../utils/build-urls';
-import { delay, delayRandom } from '../utils/delay';
+import { delayRandom } from '../utils/delay';
 import { getInputNumber, getInputText } from './../utils/input';
 
 const { connect: CONNECT, pages: PAGES } = browserConstants;
@@ -42,6 +42,11 @@ class ConnectModule {
 	}
 
 	async getNote(): Promise<string> {
+		const hasNote = await this.hasNote();
+		if (!hasNote) {
+			return '';
+		}
+
 		console.clear();
 		console.log(
 			`\nEscreva a mensagem que deseja enviar: Obs.: Use no máximo 200 caracteres\n
@@ -73,13 +78,13 @@ class ConnectModule {
 	async run(): Promise<void> {
 		const amount = await this.getAmount();
 		const term = await this.getTermOfSearch();
-		const hasNote = await this.hasNote();
-		const note = await this.hasNote();
+
+		const note = await this.getNote();
 
 		await this.startConnect(amount, term, note);
 	}
 
-	async startConnect(amount, term, note = false) {
+	async startConnect(amount: number, term: string, note: string): Promise<void> {
 		try {
 			const url = buildURL('people', term, '');
 			await this.page.goto(url);
@@ -99,7 +104,7 @@ class ConnectModule {
 					await delayRandom(1000, 2000);
 					await people.click();
 
-					if (note) {
+					if (note.length > 0) {
 						await delayRandom(1500, 2500);
 						const elemento = await people.getProperty('ariaLabel').then(el => el.jsonValue());
 						const name = CONNECT.getName(elemento);
@@ -110,25 +115,23 @@ class ConnectModule {
 
 						const msg = note.replace('{{name}}', name);
 
-						await this.page.waitForSelector(inputNote);
-						await this.page.type(inputNote, msg);
-						await delay(1000);
+						await this.page.waitForSelector(CONNECT.inputNote);
+						await this.page.type(CONNECT.inputNote, msg);
+						await delayRandom(800, 1300);
 
-						await this.page.waitForSelector(btnSendNote);
-						await this.page.click(btnSendNote);
-						await delay(1000);
+						await this.page.waitForSelector(CONNECT.btnSendNote);
+						await this.page.click(CONNECT.btnSendNote);
+						await delayRandom(800, 1300);
 					} else {
-						await delay(1000);
-						await this.page.waitForSelector(btnNoSendNote);
-						await this.page.click(btnNoSendNote);
-						await delay(1000);
+						await delayRandom(800, 1300);
+						await this.page.waitForSelector(CONNECT.btnNoSendNote);
+						await this.page.click(CONNECT.btnNoSendNote);
 					}
 				}
 
-				// Ir para a próxima página quando não houver mais pessoas para conectar
-				await this.page.waitForSelector(nextPage);
-				await this.page.click(nextPage);
-				await delay(5000);
+				await delayRandom(2000, 5000);
+				await this.page.waitForSelector(CONNECT.nextPage);
+				await this.page.click(CONNECT.nextPage);
 			}
 		} catch (err) {
 			console.error('Err: ', err);

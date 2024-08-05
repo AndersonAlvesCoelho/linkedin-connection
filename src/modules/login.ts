@@ -1,5 +1,4 @@
-import { promises as fs } from 'fs';
-
+import fs, { promises as fsPromises } from 'fs';
 import { Browser, Page } from 'puppeteer';
 import { browserConstants } from '../config/constants';
 import { delayRandom } from '../utils/delay';
@@ -46,9 +45,9 @@ export class LoginModule {
 		]);
 
 		await Promise.all([
-			fs.writeFile('cookies.json', JSON.stringify(cookies, null, 2), 'utf-8'),
-			fs.writeFile('sessionStorage.json', JSON.stringify(sessionStorage, null, 2), 'utf-8'),
-			fs.writeFile('localStorage.json', JSON.stringify(localStorage, null, 2), 'utf-8'),
+			fsPromises.writeFile('cookies.json', JSON.stringify(cookies, null, 2), 'utf-8'),
+			fsPromises.writeFile('sessionStorage.json', JSON.stringify(sessionStorage, null, 2), 'utf-8'),
+			fsPromises.writeFile('localStorage.json', JSON.stringify(localStorage, null, 2), 'utf-8'),
 		]);
 	}
 
@@ -63,9 +62,9 @@ export class LoginModule {
 		}
 
 		const [cookies, sessionStorage, localStorage] = await Promise.all([
-			fs.readFile('cookies.json', 'utf-8'),
-			fs.readFile('sessionStorage.json', 'utf-8'),
-			fs.readFile('localStorage.json', 'utf-8'),
+			fsPromises.readFile('cookies.json', 'utf-8'),
+			fsPromises.readFile('sessionStorage.json', 'utf-8'),
+			fsPromises.readFile('localStorage.json', 'utf-8'),
 		]);
 
 		await this.page.setCookie(...JSON.parse(cookies));

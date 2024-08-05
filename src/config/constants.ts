@@ -29,6 +29,7 @@ const browserConstants = {
 		btnAddNote: `button[aria-label="Adicionar nota"]`,
 		inputNote: "textarea[name='message']",
 		btnSendNote: "button[aria-label*='Enviar convite']",
+		nextPage: "button[aria-label='Avançar']",
 	},
 	followers: {
 		btnFollow: "button[aria-label*='Seguir']",

@@ -1,16 +1,16 @@
 import { Browser, Page } from 'puppeteer';
 import { browserConstants } from '../config/constants';
-import { buildUrl } from '../utils/build-urls';
+
+import buildURL from '../utils/build-urls';
 import { delayRandom } from '../utils/delay';
 import { getInputNumber, getInputText } from '../utils/input';
 
 const { followers: FOLLOWERS, pages: PAGES } = browserConstants;
 
 class FollowerModule {
-	private browser: Browser;
-	private page: Page;
-	constructor(browser) {
+	constructor(private browser: Browser, private page: Page) {
 		this.browser = browser;
+		this.page = page;
 	}
 
 	async getAmount() {
@@ -58,7 +58,7 @@ class FollowerModule {
 
 	async actionFollowers(amount = 20, term = 'recruiter', category = 'people') {
 		try {
-			const url = buildUrl(category, term);
+			const url = buildURL(category, term);
 			await this.page.goto(url);
 			await delayRandom(3000, 400);
 

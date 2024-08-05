@@ -5,10 +5,8 @@ import { delay } from '../utils/delay.js';
 import { getInputNumber, getInputText } from '../utils/input.js';
 
 const { like: LIKE, pages: PAGES } = browserConstants;
-class LikeModule {
-	private browser: Browser;
-	private page: Page;
-	constructor(page: Page, browser: Browser) {
+export default class LikeModule {
+	constructor(private page: Page, private browser: Browser) {
 		this.page = page;
 		this.browser = browser;
 	}
@@ -79,5 +77,3 @@ class LikeModule {
 		}
 	}
 }
-
-export default LikeModule;

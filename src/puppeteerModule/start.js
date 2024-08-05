@@ -27,7 +27,7 @@ async function startBrowser() {
   }
 }
 
-async function login(username, password) {
+async function login(username, password): Promise<{ browser: any; page: any }>
   try {
     const { browser, page } = await startBrowser();
     await page.type("input[id=username]", username, { delay: 100 });
