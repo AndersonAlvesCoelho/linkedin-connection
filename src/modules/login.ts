@@ -1,15 +1,17 @@
+import { input, password } from '@inquirer/prompts';
 import fs, { promises as fsPromises } from 'fs';
 import { Browser, Page } from 'puppeteer';
 import { browserConstants } from '../config/constants';
-import { delayRandom } from '../utils/delay';
-import { getInputText } from '../utils/input';
+import { delay, delayRandom } from '../utils/delay';
 
 const { login: LOGIN } = browserConstants;
+
 export class LoginModule {
 	private browser: Browser;
 	private page: Page;
 	private username: string;
 	private password: string;
+
 	constructor(browser: Browser, page: Page) {
 		this.browser = browser;
 		this.page = page;
@@ -17,38 +19,46 @@ export class LoginModule {
 		this.password = '';
 	}
 
-	async menu() {
-		console.clear();
-		console.log(' --- ** --- ***** --- ** --- ');
-		console.log(' --- **     LOGIN    ** --- ');
-		console.log(' --- ** --- ***** --- ** --- ');
-		console.log('\n');
-	}
-
 	async getCredentials() {
-		this.username = await getInputText('Email: ', false, null, false);
-		this.password = await getInputText('Senha: ', false, null, true);
+		console.clear();
+		do {
+			this.username = await input({ message: 'E-mail ou Telefone:' });
+			if (!this.username) {
+				console.log('O campo de e-mail/telefone não pode estar vazio.');
+			}
+		} while (!this.username);
+
+		do {
+			this.password = await password({ message: 'Senha', mask: true });
+			if (!this.password) {
+				console.log('O campo de senha não pode estar vazio.');
+			}
+		} while (!this.password);
 	}
 
 	async setOnForm() {
 		await this.page.type(LOGIN.email, this.username, { delay: 100 });
 		await this.page.type(LOGIN.password, this.password, { delay: 130 });
-		await delayRandom(300, 1000);
+		await delay(1000);
 		await this.page.click(LOGIN.submit);
 	}
 
 	async saveSession() {
-		const [cookies, sessionStorage, localStorage] = await Promise.all([
-			this.page.cookies(),
-			this.page.evaluate(() => sessionStorage),
-			this.page.evaluate(() => localStorage),
-		]);
+		try {
+			const [cookies, sessionStorage, localStorage] = await Promise.all([
+				this.page.cookies(),
+				this.page.evaluate(() => sessionStorage),
+				this.page.evaluate(() => localStorage),
+			]);
 
-		await Promise.all([
-			fsPromises.writeFile('cookies.json', JSON.stringify(cookies, null, 2), 'utf-8'),
-			fsPromises.writeFile('sessionStorage.json', JSON.stringify(sessionStorage, null, 2), 'utf-8'),
-			fsPromises.writeFile('localStorage.json', JSON.stringify(localStorage, null, 2), 'utf-8'),
-		]);
+			await Promise.all([
+				fsPromises.writeFile('cookies.json', JSON.stringify(cookies, null, 2), 'utf-8'),
+				fsPromises.writeFile('sessionStorage.json', JSON.stringify(sessionStorage, null, 2), 'utf-8'),
+				fsPromises.writeFile('localStorage.json', JSON.stringify(localStorage, null, 2), 'utf-8'),
+			]);
+		} catch (error) {
+			console.error('Erro ao salvar a sessão:', error);
+		}
 	}
 
 	async loadSession(): Promise<boolean> {

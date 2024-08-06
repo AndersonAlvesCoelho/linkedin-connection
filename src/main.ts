@@ -1,54 +1,61 @@
+import { select } from '@inquirer/prompts';
 import puppeteer from 'puppeteer';
 import puppeteerConfig from './config/puppeteer.config';
-import ConnectModule from './modules/connect';
-import FollowerModule from './modules/follow';
-import LikeModule from './modules/like';
 import { LoginModule } from './modules/login';
-import { getInputNumber } from './utils/input';
-
-async function menuOptions(): Promise<number> {
-	console.clear();
-	console.log(' --- ** --- ***** --- ** --- ');
-	console.log(' --- **     MENU     ** --- ');
-	console.log(' --- ** --- ***** --- ** --- ');
-	console.log('\n');
-	console.log('1. Conectar com pessoas');
-	console.log('2. Seguir pessoas');
-	console.log('3. Curtir posts');
-	console.log('4. Sair');
-	console.log('\n');
-
-	const option = await getInputNumber('Escolha uma opção: ');
-
-	return option;
-}
 
 (async () => {
 	const browser = await puppeteer.launch(puppeteerConfig);
 	const page = await browser.newPage();
 
-	const connectModule = new ConnectModule(browser, page);
-	const followerModule = new FollowerModule(browser, page);
-	const likeModule = new LikeModule(page, browser);
-	// const linkedinModule = new LinkedinModule(browser, page);
+
+	// MODULE'S
 	const loginModule = new LoginModule(browser, page);
 
-	while (true) {
-		const option = await menuOptions();
+
+	// const connectModule = new ConnectModule(browser, page);
+	// const followerModule = new FollowerModule(browser, page);
+	// const likeModule = new LikeModule(page, browser);
+	// // const linkedinModule = new LinkedinModule(browser, page);
+	let exit = true;
+
+	while (exit) {
+		const option = await select({
+			message: 'Select a package manager',
+			choices: [
+				{
+					name: '1. Conectar com pessoas',
+					value: 1,
+				},
+				{
+					name: '2. Seguir pessoas',
+					value: 2,
+				},
+				{
+					name: '3. Curtir posts',
+					value: 3,
+				},
+				{
+					name: '4. Sair',
+					value: 4,
+				},
+			],
+		});
+
 		await loginModule.run();
 
 		switch (option) {
 			case 1:
-				await connectModule.run();
+				console.log('await connectModule.run()');
 				break;
 			case 2:
-				await followerModule.run();
+				console.log('await followerModule.run()');
 				break;
 			case 3:
-				await likeModule.run();
+				console.log('await likeModule.run()');
 				break;
 			case 4:
-				await browser.close();
+				console.log('await browser.close()');
+				exit = false;
 				return;
 			default:
 				console.log('Opção inválida');

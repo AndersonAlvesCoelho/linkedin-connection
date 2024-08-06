@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"target": "es2020", // Target ECMAScript version
+		"module": "esnext", // Module resolution strategy
+		"moduleResolution": "node", // How modules are resolved
+		"esModuleInterop": true, // Allows default imports from modules with no default export
+		"forceConsistentCasingInFileNames": true,
+		"strict": true, // Enable all strict type-checking options
+		"skipLibCheck": true // Skip type checking of declaration files
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules"]
+}
