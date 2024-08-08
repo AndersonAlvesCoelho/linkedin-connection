@@ -15,12 +15,11 @@ export class LoginModule {
 	constructor(browser: Browser, page: Page) {
 		this.browser = browser;
 		this.page = page;
-		this.username = '';
-		this.password = '';
+		this.username = 'a0a0coelho0@gmail.com';
+		this.password = 'LinkedinCoelho98765';
 	}
 
 	async getCredentials() {
-		console.clear();
 		do {
 			this.username = await input({ message: 'E-mail ou Telefone:' });
 			if (!this.username) {
@@ -37,8 +36,11 @@ export class LoginModule {
 	}
 
 	async setOnForm() {
-		await this.page.type(LOGIN.email, this.username, { delay: 100 });
-		await this.page.type(LOGIN.password, this.password, { delay: 130 });
+		await delay(5000);
+
+		await this.page.type(LOGIN.email, this.username);
+		await this.page.type(LOGIN.password, this.password);
+
 		await delay(1000);
 		await this.page.click(LOGIN.submit);
 	}
@@ -88,14 +90,54 @@ export class LoginModule {
 		return true;
 	}
 
-	async run() {
-		const hasSession = await this.loadSession();
-		if (hasSession) {
-			return;
+	async isLoginError(): Promise<boolean> {
+		const usernameError = await this.page
+			.$eval(LOGIN.errorUsername, el => el.textContent?.trim() || null)
+			.catch(() => null);
+		const passwordError = await this.page
+			.$eval(LOGIN.errorPassword, el => el.textContent?.trim() || null)
+			.catch(() => null);
+
+		if (usernameError && usernameError.includes('Insira um nome de usuário válido')) {
+			console.log('O nome de usuário fornecido é inválido.');
+			return true;
 		}
-		await this.getCredentials();
-		await this.setOnForm();
-		delayRandom(2000, 5000);
+		if (passwordError && passwordError.includes('A senha deve ter no mínimo 6 caracteres.')) {
+			console.log('A senha fornecida deve ter pelo menos 6 caracteres.');
+			return true;
+		}
+		if (
+			[usernameError, passwordError]?.includes('E-mail ou senha incorreta. Tente novamente ou  crie uma conta .')
+		) {
+			console.log('E-mail ou senha incorreta.');
+			return true;
+		}
+
+		return false;
+	}
+
+	async run() {
+		await this.page.goto(LOGIN.url);
+		await delay(1000);
+		console.clear();
+
+		// const hasSession = await this.loadSession();
+		// console.log("hasSession ", hasSession)
+		// if (hasSession) {
+		// 	return;
+		// }
+
+		let loginSuccessful = false;
+		while (!loginSuccessful) {
+			// await this.getCredentials();
+			await this.setOnForm();
+
+			if (await this.isLoginError()) continue;
+
+			loginSuccessful = true;
+		}
+
+		await delayRandom(2000, 5000);
 		await this.saveSession();
 	}
 }

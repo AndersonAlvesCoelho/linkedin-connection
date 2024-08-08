@@ -9,6 +9,9 @@ const browserConstants = {
 		email: 'input[id=username]',
 		password: 'input[id=password]',
 		submit: "button[data-litms-control-urn='login-submit']",
+		errorUsername: '#error-for-username',
+		errorPassword: '#error-for-password',
+
 	},
 	like: {
 		btnsOfPost:
@@ -50,3 +53,4 @@ const browserConstants = {
 	},
 };
 export { browserConstants };
+

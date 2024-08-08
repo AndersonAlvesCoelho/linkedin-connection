@@ -1,8 +1,8 @@
+import { input, number } from '@inquirer/prompts';
 import { Browser, Page } from 'puppeteer';
 import { browserConstants } from '../config/constants.js';
-import { buildUrl } from '../utils/build-urls.js';
+import buildURL from '../utils/build-urls.js';
 import { delay } from '../utils/delay.js';
-import { getInputNumber, getInputText } from '../utils/input.js';
 
 const { like: LIKE, pages: PAGES } = browserConstants;
 export default class LikeModule {
@@ -14,9 +14,11 @@ export default class LikeModule {
 	async getAmount() {
 		console.clear();
 		console.log('Quantidade de Posts que deseja curtir. Máximo: 250\nValor padrão: 20');
-
+		let amount = 20;
 		while (true) {
-			const amount = await getInputNumber('Quantidade: ', 20);
+			const amountUser = await number({ message: 'Quantidade: ' });
+			amount = amountUser ? amountUser : amount;
+
 			if (amount < 1 || amount > 250) {
 				console.log('Quantidade inválida');
 				continue;
@@ -28,7 +30,7 @@ export default class LikeModule {
 	async getHashtag() {
 		console.clear();
 		console.log('Informe a hashtag que deseja buscar.\n' + 'Exemplo: python, javascript, node, etc.');
-		let hashtag = await getInputText('Hashtag: ', true);
+		const hashtag = await input({ message: 'Hashtag: ' });
 
 		if (hashtag.length < 1) {
 			return '';
@@ -39,7 +41,7 @@ export default class LikeModule {
 	async likingPosts(amount = 20, hashtag = '') {
 		try {
 			if (hashtag) {
-				await this.page.goto(buildUrl('', '', hashtag));
+				await this.page.goto(buildURL('', '', hashtag));
 				await delay(5000);
 			}
 

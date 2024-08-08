@@ -1,24 +1,24 @@
 import { select } from '@inquirer/prompts';
 import puppeteer from 'puppeteer';
 import puppeteerConfig from './config/puppeteer.config';
+import LikeModule from './modules/like';
 import { LoginModule } from './modules/login';
 
 (async () => {
+
 	const browser = await puppeteer.launch(puppeteerConfig);
 	const page = await browser.newPage();
 
-
 	// MODULE'S
-	const loginModule = new LoginModule(browser, page);
-
+	await new LoginModule(browser, page).run();
 
 	// const connectModule = new ConnectModule(browser, page);
 	// const followerModule = new FollowerModule(browser, page);
-	// const likeModule = new LikeModule(page, browser);
-	// // const linkedinModule = new LinkedinModule(browser, page);
+	// const linkedinModule = new LinkedinModule(browser, page);
 	let exit = true;
 
 	while (exit) {
+		console.clear()
 		const option = await select({
 			message: 'Select a package manager',
 			choices: [
@@ -41,8 +41,6 @@ import { LoginModule } from './modules/login';
 			],
 		});
 
-		await loginModule.run();
-
 		switch (option) {
 			case 1:
 				console.log('await connectModule.run()');
@@ -51,7 +49,7 @@ import { LoginModule } from './modules/login';
 				console.log('await followerModule.run()');
 				break;
 			case 3:
-				console.log('await likeModule.run()');
+				await new LikeModule(page, browser).run();
 				break;
 			case 4:
 				console.log('await browser.close()');
