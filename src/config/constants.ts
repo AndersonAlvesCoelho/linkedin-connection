@@ -46,7 +46,8 @@ const browserConstants = {
 		getName:
 			'span.update-components-actor__name.hoverable-link-text.t-14.t-bold.t-black > span > span:nth-child(1)',
 		btnComment: "button[aria-label='Comentar']",
-		btnSend: '.m2.artdeco-button.artdeco-button--1.artdeco-button--tertiary.ember-view',
+		btnSend:
+			'form.comments-comment-box__form > div > button.comments-comment-box__submit-button.mt3.artdeco-button.artdeco-button--1.artdeco-button--primary.ember-view',
 		getCommentsAuthor: 'h3.comments-comment-meta__description',
 		btnShowMorePosts:
 			'.artdeco-button.artdeco-button--muted.artdeco-button--1.artdeco-button--full.artdeco-button--secondary.ember-view.scaffold-finite-scroll__load-button',
